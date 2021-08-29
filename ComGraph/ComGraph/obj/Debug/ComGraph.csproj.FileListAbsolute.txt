@@ -1,0 +1,10 @@
+C:\Users\Dmitr\source\repos\ComGraph\ComGraph\bin\Debug\ComGraph.exe.config
+C:\Users\Dmitr\source\repos\ComGraph\ComGraph\bin\Debug\ComGraph.exe
+C:\Users\Dmitr\source\repos\ComGraph\ComGraph\bin\Debug\ComGraph.pdb
+C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.csprojAssemblyReference.cache
+C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.ComGraph.resources
+C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.Properties.Resources.resources
+C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.csproj.GenerateResource.cache
+C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.csproj.CoreCompileInputs.cache
+C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.exe
+C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.pdb

@@ -1,0 +1,13 @@
+{
+    "version": "1.0.0",
+    "EnableSyncByte": "false",
+    "EnableBandwith": "true",
+    "NumOfChannels": "16",
+    "DrawChannelFrom": "2",
+    "DrawNumofChannels": "2",
+    "NumofByteOnechannel": "1",
+    "SyncrByte": "0",
+    "BandwithOfGraph": "10",
+    "MinScale": "0",
+    "MaxScale": "256"
+}

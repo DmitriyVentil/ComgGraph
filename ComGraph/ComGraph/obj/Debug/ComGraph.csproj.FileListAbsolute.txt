@@ -8,3 +8,16 @@ C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.csproj.Generate
 C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.csproj.CoreCompileInputs.cache
 C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.exe
 C:\Users\Dmitr\source\repos\ComGraph\ComGraph\obj\Debug\ComGraph.pdb
+D:\projects\ComgGraph\ComGraph\ComGraph\bin\Debug\ComGraph.exe.config
+D:\projects\ComgGraph\ComGraph\ComGraph\bin\Debug\ComGraph.exe
+D:\projects\ComgGraph\ComGraph\ComGraph\bin\Debug\ComGraph.pdb
+D:\projects\ComgGraph\ComGraph\ComGraph\obj\Debug\ComGraph.csprojAssemblyReference.cache
+D:\projects\ComgGraph\ComGraph\ComGraph\obj\Debug\ComGraph.ComGraph.resources
+D:\projects\ComgGraph\ComGraph\ComGraph\obj\Debug\ComGraph.Properties.Resources.resources
+D:\projects\ComgGraph\ComGraph\ComGraph\obj\Debug\ComGraph.csproj.GenerateResource.cache
+D:\projects\ComgGraph\ComGraph\ComGraph\obj\Debug\ComGraph.csproj.CoreCompileInputs.cache
+D:\projects\ComgGraph\ComGraph\ComGraph\obj\Debug\ComGraph.exe
+D:\projects\ComgGraph\ComGraph\ComGraph\obj\Debug\ComGraph.pdb
+D:\projects\ComgGraph\ComGraph\ComGraph\bin\Debug\Newtonsoft.Json.dll
+D:\projects\ComgGraph\ComGraph\ComGraph\bin\Debug\Newtonsoft.Json.xml
+D:\projects\ComgGraph\ComGraph\ComGraph\obj\Debug\ComGraph.csproj.CopyComplete

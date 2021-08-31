@@ -11,14 +11,18 @@ using System.Windows.Forms;
 
 using System.IO.Ports;
 using System.Runtime.InteropServices;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace ComGraph
 {
+
     public partial class ComGraph : Form
     {
         // Создаем объект для работы с портами
         SerialPort serialportUser = new SerialPort();
 
+ 
         //Настройки графика
         private static bool EnableDraw; // разрешение рисования
         private static int NumOfChannels; // Число каналов ( или число датчиков, измерения которых приходит по  UART)
@@ -32,6 +36,40 @@ namespace ComGraph
         private static int MinScale; // Максимальное значение по Y
         private static int MaxScale; // минимальное значение по Y
 
+        public struct DataGraph
+        {
+            public string version { get; set; }
+            public bool EnableSyncByte { get; set; }
+            public bool EnableBandwith { get; set; }
+            public int NumOfChannels { get; set; }
+            public int DrawChannelFrom { get; set; }
+            public int DrawNumofChannels { get; set; }
+            public int NumofByteOnechannel { get; set; }
+            public int SyncrByte { get; set; }
+            public int BandwithOfGraph { get; set; }
+            public int MinScale { get; set; }
+            public int MaxScale { get; set; }
+
+            public DataGraph(string version, bool EnableSyncByte, bool EnableBandwith, int NumOfChannels,
+                int DrawChannelFrom, int DrawNumofChannels, int NumofByteOnechannel, int SyncrByte, int BandwithOfGraph,
+                int MinScale, int MaxScale)
+            {
+                this.version = version;
+                this.EnableSyncByte = EnableSyncByte;
+                this.EnableBandwith = EnableBandwith;
+                this.NumOfChannels = NumOfChannels;
+                this.DrawChannelFrom = DrawChannelFrom;
+                this.DrawNumofChannels = DrawNumofChannels;
+                this.NumofByteOnechannel = NumofByteOnechannel;
+                this.SyncrByte = SyncrByte;
+                this.BandwithOfGraph = BandwithOfGraph;
+                this.MinScale = MinScale;
+                this.MaxScale = MaxScale;
+
+            }
+        }
+        DataGraph DataGraphUser = new DataGraph("1.0.0",false,false,1,1,1,1,1,10,0,255);
+        
 
         public ComGraph()
         {
@@ -86,18 +124,18 @@ namespace ComGraph
         private void DataReceivedHandler(object sender,SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
-            int indata;
+            byte[] indata=new byte[DataGraphUser.NumOfChannels];
             try
             {
-                indata = sp.ReadByte();
+                sp.Read(indata,0, DataGraphUser.NumOfChannels);
             }
             catch (Exception excUser)
-            {
+            { 
                 return;
             }
             GraphDrawUser(indata);
         }
-
+         
 
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -223,7 +261,22 @@ namespace ComGraph
         {
 
         }
+        //чтение Json файла
+        
+        private DataGraph JsonRead(string filename)
+        {
+            using (StreamReader fs = new StreamReader(filename, System.Text.Encoding.Default))
+            {
+                string line;
+                line = fs.ReadToEnd();
 
+                DataGraph m = JsonConvert.DeserializeObject<DataGraph>(line);
+                return m;
+
+            }
+
+        }
+        
         private void ComGraph_Load(object sender, EventArgs e)
         {
             // Ставим первую точку на графике, чтобы были видны клеточки
@@ -242,7 +295,7 @@ namespace ComGraph
 
         private void numericUpDownTimeout_ValueChanged(object sender, EventArgs e)
         {
-
+            Console.WriteLine();
         }
 
         private void comboBoxPort_MouseClick(object sender, MouseEventArgs e)
@@ -299,7 +352,20 @@ namespace ComGraph
             {
                 // Записываем в поле название файла
                 textBoxLoadFileSettings.Text = openFileDialog.FileName;
-                // Читам настройки из файла
+                // Читаем настройки из файла
+                DataGraphUser = JsonRead(textBoxLoadFileSettings.Text);
+                serialportUser.ReceivedBytesThreshold = DataGraphUser.NumOfChannels;
+                // Добавляем новые графики на график
+                chart1.Series.Clear();
+              
+                if( DataGraphUser.DrawNumofChannels>0)
+                {
+                   for(int i=0;i< DataGraphUser.DrawNumofChannels; i++)
+                   {
+                        chart1.Series.Add("channel" + (DataGraphUser.DrawChannelFrom + i).ToString());
+                   }
+
+                }
 
 
 
@@ -307,11 +373,7 @@ namespace ComGraph
 
 
 
-
-
-
-
-    }
+            }
         }
 
         private void buttonPlotFromCOM_Click(object sender, EventArgs e)
@@ -332,9 +394,11 @@ namespace ComGraph
             }
         }
         private int count = 0;
-        private void GraphDrawUser(int DataFromCOM)
+        
+        private void GraphDrawUser(byte[] DataFromCOM)
         {
             DateTime DateTimeUser = DateTime.Now;
+            int[] data = new int[DataGraphUser.NumOfChannels];
             if (EnableDraw == true && serialportUser.IsOpen==true)
             {
                 count++;
@@ -342,12 +406,33 @@ namespace ComGraph
                 {
                     count = 0;
                 }
+                // Выводим все графики ( по натсройкам json файла)
                 chart1.Invoke((MethodInvoker)delegate
                 {
-                    chart1.Series[0].Points.AddXY(count, DataFromCOM);
+                    for(int i=0;i< DataGraphUser.DrawNumofChannels; i++)
+                    {
+                        switch(DataGraphUser.NumofByteOnechannel)
+                        {
+                            case 1:
+                                byte[] data = DataFromCOM;
+                                break;
+                            case 2:
+
+                                break;
+                            case 3:
+
+                                break;
+                            case 4:
+
+                                break;
+                        }
+                        chart1.Series[i].Points.AddXY(count, DataFromCOM);
+                    }
+                 
                 });
 
             }
         }
     }
+
 }

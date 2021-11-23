@@ -3,7 +3,7 @@
     "EnableSyncByte": "false",
     "EnableBandwith": "true",
     "NumOfChannels": "16",
-    "DrawChannelFrom": "2",
+    "DrawChannelFrom": "1",
     "DrawNumofChannels": "2",
     "NumofByteOnechannel": "1",
     "SyncrByte": "0",

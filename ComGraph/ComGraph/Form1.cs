@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.IO.Ports;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Windows.Forms.DataVisualization.Charting;
 using Newtonsoft.Json;
 
 namespace ComGraph
@@ -21,8 +22,8 @@ namespace ComGraph
     {
         // Создаем объект для работы с портами
         SerialPort serialportUser = new SerialPort();
+       
 
- 
         //Настройки графика
         private static bool EnableDraw; // разрешение рисования
         private static int NumOfChannels; // Число каналов ( или число датчиков, измерения которых приходит по  UART)
@@ -68,6 +69,7 @@ namespace ComGraph
 
             }
         }
+        // Задаем дефолтные настройки
         DataGraph DataGraphUser = new DataGraph("1.0.0",false,false,1,1,1,1,1,10,0,255);
         
 
@@ -124,10 +126,10 @@ namespace ComGraph
         private void DataReceivedHandler(object sender,SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
-            byte[] indata=new byte[DataGraphUser.NumOfChannels];
+            byte[] indata=new byte[DataGraphUser.NumOfChannels*DataGraphUser.NumofByteOnechannel];
             try
             {
-                sp.Read(indata,0, DataGraphUser.NumOfChannels);
+                sp.Read(indata,0, DataGraphUser.NumOfChannels*DataGraphUser.NumofByteOnechannel);
             }
             catch (Exception excUser)
             { 
@@ -203,7 +205,7 @@ namespace ComGraph
                     serialportUser.WriteTimeout = (int)numericUpDownTimeout.Value * 1000;
                     serialportUser.Handshake = (Handshake)comboBoxFlowcontrol.SelectedIndex;
                     serialportUser.Encoding = Encoding.ASCII;
-                    serialportUser.ReceivedBytesThreshold = 1;
+                    serialportUser.ReceivedBytesThreshold = DataGraphUser.NumOfChannels * DataGraphUser.NumofByteOnechannel;
                     serialportUser.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
 
                     serialportUser.Open();
@@ -363,15 +365,10 @@ namespace ComGraph
                    for(int i=0;i< DataGraphUser.DrawNumofChannels; i++)
                    {
                         chart1.Series.Add("channel" + (DataGraphUser.DrawChannelFrom + i).ToString());
+                        chart1.Series[i].ChartType = SeriesChartType.Line;
                    }
 
                 }
-
-
-
-
-
-
 
             }
         }
@@ -409,24 +406,30 @@ namespace ComGraph
                 // Выводим все графики ( по натсройкам json файла)
                 chart1.Invoke((MethodInvoker)delegate
                 {
-                    for(int i=0;i< DataGraphUser.DrawNumofChannels; i++)
+                    for(int i=0,j=0;i< DataGraphUser.DrawNumofChannels; i++)
                     {
                         switch(DataGraphUser.NumofByteOnechannel)
                         {
                             case 1:
-                                byte[] data = DataFromCOM;
+                                data[i] = DataFromCOM[j];
+                                j++;
                                 break;
                             case 2:
-
+                                data[i] = (DataFromCOM[j]<< 8) | DataFromCOM[j+1];
+                                j += 2;
                                 break;
                             case 3:
-
+                                data[i] = (DataFromCOM[j] << 16) | (DataFromCOM[j + 1] << 8) | DataFromCOM[j + 2];
+                                j += 3;
                                 break;
                             case 4:
-
+                                data[i] = (DataFromCOM[j] << 24) | (DataFromCOM[j + 1] << 16) | (DataFromCOM[j + 2]<<8) | DataFromCOM[j + 3];
+                                j += 4;
                                 break;
                         }
-                        chart1.Series[i].Points.AddXY(count, DataFromCOM);
+                        DateTimeUser = DateTime.Now;
+                        chart1.Series[i].Points.AddXY(DateTimeUser.Millisecond+ DateTimeUser.Second*1000+
+                            DateTimeUser.Minute*60*1000+ DateTimeUser.Hour*360*1000, data[i]);
                     }
                  
                 });
